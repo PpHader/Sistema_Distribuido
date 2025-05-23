@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <h1>Bienvenido, <span id="username"></span>!</h1>
+        <p>Esta es un área protegida del sistema.</p>
+        <button id="logoutBtn">Cerrar Sesión</button>
+
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            authService.protectRoute();
+
+            const user = sessionManager.getCurrentUser();
+            if (user) {
+                document.getElementById('username').textContent = user.name;
+            }
+
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                authService.logout();
+
+                console.log('Datos de sesión actual:', sessionManager.getSession());
+                console.log('Usuarios en mock database:', mockDatabase.users);
+            });
+        });
+    </script>
+</body>
+
+</html>
