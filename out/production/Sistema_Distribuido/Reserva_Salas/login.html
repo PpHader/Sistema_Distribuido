@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="login-container">
+        <h1>Iniciar Sesión</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Usuario:</label>
+                <input type="text" id="username" required autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" required autocomplete="current-password">
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn primary">Ingresar</button>
+                <a href="register.html" class="btn secondary">Registrarse</a>
+            </div>
+            <div id="errorMessage" class="error-message"></div>
+        </form>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            const errorElement = document.getElementById('errorMessage');
+
+            loginForm.addEventListener('submit', async(e) => {
+                e.preventDefault();
+
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+
+                errorElement.textContent = '';
+                errorElement.classList.remove('visible');
+
+                if (!username || !password) {
+                    errorElement.textContent = 'Por favor completa todos los campos';
+                    errorElement.classList.add('visible');
+                    return;
+                }
+
+                try {
+                    const result = await authService.login(username, password);
+
+                    if (result.success) {
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        errorElement.textContent = result.message || 'Credenciales incorrectas';
+                        errorElement.classList.add('visible');
+                    }
+                } catch (error) {
+                    errorElement.textContent = 'Error al conectar con el servidor';
+                    errorElement.classList.add('visible');
+                    console.error('Error en login:', error);
+                }
+            });
+        });
+        document.getElementById('loginForm').addEventListener('submit', async(e) => {
+            e.preventDefault();
+            // Mostrar datos almacenados para depuración
+            console.log('Usuarios registrados:', userDatabase.getUsers());
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+        });
+    </script>
+</body>
+
+</html>
